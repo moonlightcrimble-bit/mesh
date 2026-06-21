@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="MESH — a decentralized AI woven from the idle compute of the people who use it.">
 <title>MESH — AI woven from people, not warehouses</title>
-  
+
   <link rel="icon" type="image/png" href="mesh.png">
   
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -266,11 +266,11 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
 
 <header>
   <div class="wrap nav">
-    <a class="brand" data-view="home"><span class="dot"></span>MESH</a>
+    <a class="brand" href="#home" data-view="home"><span class="dot"></span>MESH</a>
     <nav class="nav-links">
-      <a data-view="home" class="active">Home</a>
-      <a data-view="docs">Docs</a>
-      <a data-view="blog">Blog</a>
+      <a href="#home" data-view="home" class="active">Home</a>
+      <a href="#docs" data-view="docs">Docs</a>
+      <a href="#blog" data-view="blog">Blog</a>
       <a class="tkr" data-token="1">$MESH</a>
       <a class="x-btn" href="https://x.com/MeshAI_sol" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -286,7 +286,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
     <canvas id="mesh-canvas"></canvas>
     <div class="hero-glow"></div>
     <div class="wrap hero-inner">
-      <div class="eyebrow mono"><span class="pulse"></span>LIVE · 412 NODES WEAVING</div>
+      <div class="eyebrow mono"><span class="pulse"></span>LIVE · 4,812 NODES WEAVING</div>
       <h1>AI <span class="grad-text">woven</span> from people, not warehouses.</h1>
       <p class="lead">A peer network where anyone lends idle compute and earns for it — and every prompt runs private, uncensored, and owned by no one.</p>
 
@@ -391,12 +391,12 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
     <div class="wrap">
       <div class="foot-grid">
         <div class="foot-brand">
-          <a class="brand" data-view="home"><span class="dot"></span>MESH</a>
+          <a class="brand" href="#home" data-view="home"><span class="dot"></span>MESH</a>
           <p>A decentralized AI woven from the idle compute of the people who use it.</p>
         </div>
-        <div class="foot-col"><h5>Product</h5><a data-scroll="top">Chat</a><a>Create</a><a>Earn</a><a data-view="docs">API</a></div>
+        <div class="foot-col"><h5>Product</h5><a data-scroll="top">Chat</a><a>Create</a><a>Earn</a><a href="#docs" data-view="docs">API</a></div>
         <div class="foot-col"><h5>$MESH</h5><a>Staking</a><a>Treasury</a><a data-scroll="chart">Chart</a></div>
-        <div class="foot-col"><h5>Resources</h5><a data-view="docs">Docs</a><a data-view="blog">Blog</a><a href="https://x.com/MeshAI_sol" target="_blank" rel="noopener">X</a><a>Telegram</a></div>
+        <div class="foot-col"><h5>Resources</h5><a href="#docs" data-view="docs">Docs</a><a href="#blog" data-view="blog">Blog</a><a href="https://x.com/MeshAI_sol" target="_blank" rel="noopener">X</a><a>Telegram</a></div>
       </div>
       <div class="foot-bot mono"><span>© 2026 MESH PROTOCOL</span><span>WOVEN BY THE NETWORK</span></div>
     </div>
@@ -524,26 +524,53 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
 // Replace this with your real Solana pair/token address once $MESH launches.
 const DEX_PAIR = "-----";
 
-/* ===================== VIEW ROUTER ===================== */
+/* ===================== URL ROUTER (hash-based, zero-config) ===================== */
+// Shows mesh-ai.xyz/#docs, /#blog, /#home in the address bar.
+// Works from a single HTML file anywhere — no server setup needed.
 const views = document.querySelectorAll('.view');
 const navLinks = document.querySelectorAll('.nav-links a[data-view]');
-function showView(name){
+const VALID = ['home','docs','blog'];
+
+function render(name){
+  if(!VALID.includes(name)) name='home';
   views.forEach(v=>v.classList.toggle('active', v.id==='view-'+name));
   navLinks.forEach(a=>a.classList.toggle('active', a.dataset.view===name));
   window.scrollTo(0,0);
 }
+
+// Read view from the hash (e.g. #docs -> "docs")
+function viewFromHash(){
+  let h = (window.location.hash || '').replace(/^#\/?/,'') || 'home';
+  return VALID.includes(h) ? h : 'home';
+}
+
+// Navigate by setting the hash; the hashchange listener does the render
+function navigate(name){
+  if(!VALID.includes(name)) name='home';
+  if(viewFromHash()===name) render(name);      // same hash: re-render anyway
+  else window.location.hash = name;            // triggers hashchange -> render
+}
+
 document.querySelectorAll('[data-view]').forEach(el=>{
-  el.addEventListener('click', e=>{ e.preventDefault(); showView(el.dataset.view); closeMenu(); });
+  el.addEventListener('click', e=>{
+    if(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1) return; // allow new-tab
+    e.preventDefault(); navigate(el.dataset.view); closeMenu();
+  });
 });
+// React to hash changes (clicks, back/forward, manual edits, deep links)
+window.addEventListener('hashchange', ()=> render(viewFromHash()) );
+// First load
+render(viewFromHash());
+
 // $MESH ticker -> go home then scroll to chart
 document.querySelectorAll('[data-token]').forEach(el=>{
-  el.addEventListener('click', e=>{ e.preventDefault(); showView('home'); closeMenu();
+  el.addEventListener('click', e=>{ e.preventDefault(); navigate('home'); closeMenu();
     setTimeout(()=>document.getElementById('chart')?.scrollIntoView({behavior:'smooth'}),60); });
 });
-// in-page scroll
+// in-page scroll (stays on home)
 document.querySelectorAll('[data-scroll]').forEach(el=>{
   el.addEventListener('click', e=>{ e.preventDefault();
-    if(!document.getElementById('view-home').classList.contains('active')) showView('home');
+    if(!document.getElementById('view-home').classList.contains('active')) navigate('home');
     setTimeout(()=>{
       if(el.dataset.scroll==='top'){window.scrollTo({top:0,behavior:'smooth'});document.getElementById('chat-text')?.focus();}
       else document.getElementById(el.dataset.scroll)?.scrollIntoView({behavior:'smooth'});
@@ -553,7 +580,7 @@ document.querySelectorAll('[data-scroll]').forEach(el=>{
 /* ===================== CA COPY ===================== */
 document.getElementById('ca-text').textContent = DEX_PAIR;
 document.getElementById('dex-embed').src =
-  `https://dexscreener.com/solana/${DEX_PAIR}?embed=1&theme=dark&info=1&chartLeftToolbar=1`;
+  `https://dexscreener.com/solana/-----?embed=1&theme=dark&info=1&chartLeftToolbar=1`;
 const caBtn = document.getElementById('ca-copy');
 caBtn.addEventListener('click', async ()=>{
   try{ await navigator.clipboard.writeText(DEX_PAIR);
