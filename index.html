@@ -365,7 +365,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
       </div>
       <div class="ca-bar">
         <span class="ca-label">CA</span>
-        <span class="ca-val" id="ca-text">2QesxjpX5iPv9gtQZkxpeLfoBa8m3hz3FoBHsQfKpump</span>
+        <span class="ca-val" id="ca-text">###</span>
         <button class="ca-copy" id="ca-copy">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           Copy
@@ -373,7 +373,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
       </div>
       <div class="dex-frame">
         <iframe id="dex-embed" title="DexScreener $MESH chart" loading="lazy"
-          src="https://dexscreener.com/solana/2QesxjpX5iPv9gtQZkxpeLfoBa8m3hz3FoBHsQfKpump?embed=1&theme=dark&info=1&chartLeftToolbar=1"></iframe>
+          src="https://dexscreener.com/solana/###?embed=1&theme=dark&info=1&chartLeftToolbar=1"></iframe>
       </div>
       <p class="dex-note"></p>
     </div>
@@ -522,7 +522,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
 <script>
 /* ===================== CONFIG ===================== */
 // Replace this with your real Solana pair/token address once $MESH launches.
-const DEX_PAIR = "2QesxjpX5iPv9gtQZkxpeLfoBa8m3hz3FoBHsQfKpump";
+const DEX_PAIR = "###";
 
 /* ===================== URL ROUTER (hash-based, zero-config) ===================== */
 // Shows mesh-ai.xyz/#docs, /#blog, /#home in the address bar.
@@ -580,7 +580,7 @@ document.querySelectorAll('[data-scroll]').forEach(el=>{
 /* ===================== CA COPY ===================== */
 document.getElementById('ca-text').textContent = DEX_PAIR;
 document.getElementById('dex-embed').src =
-  `https://dexscreener.com/solana/2QesxjpX5iPv9gtQZkxpeLfoBa8m3hz3FoBHsQfKpump?embed=1&theme=dark&info=1&chartLeftToolbar=1`;
+  `https://dexscreener.com/solana/###?embed=1&theme=dark&info=1&chartLeftToolbar=1`;
 const caBtn = document.getElementById('ca-copy');
 caBtn.addEventListener('click', async ()=>{
   try{ await navigator.clipboard.writeText(DEX_PAIR);
